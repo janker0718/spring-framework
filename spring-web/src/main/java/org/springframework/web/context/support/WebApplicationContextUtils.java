@@ -65,6 +65,8 @@ import org.springframework.web.context.request.WebRequest;
  */
 public abstract class WebApplicationContextUtils {
 
+
+	//jsf 存在
 	private static final boolean jsfPresent =
 			ClassUtils.isPresent("jakarta.faces.context.FacesContext", RequestContextHolder.class.getClassLoader());
 
@@ -175,28 +177,34 @@ public abstract class WebApplicationContextUtils {
 	}
 
 	/**
-	 * Register web-specific scopes ("request", "session", "globalSession", "application")
-	 * with the given BeanFactory, as used by the WebApplicationContext.
+	 *  ("request", "session", "globalSession", "application")
+	 * 使用给定的BeanFactory注册特定于web的作用域，如WebApplicationContext所使用的。
 	 * @param beanFactory the BeanFactory to configure
 	 * @param sc the ServletContext that we're running within
 	 */
 	public static void registerWebApplicationScopes(ConfigurableListableBeanFactory beanFactory,
 			@Nullable ServletContext sc) {
-
+		//注册 request 作用域
 		beanFactory.registerScope(WebApplicationContext.SCOPE_REQUEST, new RequestScope());
+		//注册 session 作用域
 		beanFactory.registerScope(WebApplicationContext.SCOPE_SESSION, new SessionScope());
 		if (sc != null) {
+			//注册 app 作用域
 			ServletContextScope appScope = new ServletContextScope(sc);
 			beanFactory.registerScope(WebApplicationContext.SCOPE_APPLICATION, appScope);
 			// Register as ServletContext attribute, for ContextCleanupListener to detect it.
 			sc.setAttribute(ServletContextScope.class.getName(), appScope);
 		}
-
+		//注册可解决的依赖关系 ServletRequest - RequestObjectFactory
 		beanFactory.registerResolvableDependency(ServletRequest.class, new RequestObjectFactory());
+		//注册可解决的依赖关系 ServletResponse - ResponseObjectFactory
 		beanFactory.registerResolvableDependency(ServletResponse.class, new ResponseObjectFactory());
+		//注册可解决的依赖关系 HttpSession - SessionObjectFactory
 		beanFactory.registerResolvableDependency(HttpSession.class, new SessionObjectFactory());
+		//注册可解决的依赖关系 WebRequest - WebRequestObjectFactory
 		beanFactory.registerResolvableDependency(WebRequest.class, new WebRequestObjectFactory());
 		if (jsfPresent) {
+			//
 			FacesDependencyRegistrar.registerFacesDependencies(beanFactory);
 		}
 	}
@@ -397,7 +405,7 @@ public abstract class WebApplicationContextUtils {
 
 
 	/**
-	 * Inner class to avoid hard-coded JSF dependency.
+	 * 内部类以避免硬编码的JSF依赖
  	 */
 	private static class FacesDependencyRegistrar {
 

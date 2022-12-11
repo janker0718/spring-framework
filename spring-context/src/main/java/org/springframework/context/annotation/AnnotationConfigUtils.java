@@ -105,13 +105,13 @@ public abstract class AnnotationConfigUtils {
 			"org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor";
 
 	/**
-	 * The bean name of the internally managed @EventListener annotation processor.
+	 * 内部管理的 @EventListener 注解处理器的bean名称。
 	 */
 	public static final String EVENT_LISTENER_PROCESSOR_BEAN_NAME =
 			"org.springframework.context.event.internalEventListenerProcessor";
 
 	/**
-	 * The bean name of the internally managed EventListenerFactory.
+	 * 内部管理的 EventListenerFactory 的bean名称。
 	 */
 	public static final String EVENT_LISTENER_FACTORY_BEAN_NAME =
 			"org.springframework.context.event.internalEventListenerFactory";
@@ -131,6 +131,7 @@ public abstract class AnnotationConfigUtils {
 
 
 	/**
+	 * 注册所有相关的注解后置处理器
 	 * Register all relevant annotation post processors in the given registry.
 	 * @param registry the registry to operate on
 	 */
@@ -148,7 +149,7 @@ public abstract class AnnotationConfigUtils {
 	 */
 	public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
-
+		//打开包装的 DefaultListableBeanFactory
 		DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);
 		if (beanFactory != null) {
 			if (!(beanFactory.getDependencyComparator() instanceof AnnotationAwareOrderComparator)) {
@@ -173,15 +174,14 @@ public abstract class AnnotationConfigUtils {
 			beanDefs.add(registerPostProcessor(registry, def, AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME));
 		}
 
-		// Check for Jakarta Annotations support, and if present add the CommonAnnotationBeanPostProcessor.
+		// 检查对于 Jakarta 注解支持 如果存在就添加 CommonAnnotationBeanPostProcessor
 		if (jakartaAnnotationsPresent && !registry.containsBeanDefinition(COMMON_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(CommonAnnotationBeanPostProcessor.class);
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, COMMON_ANNOTATION_PROCESSOR_BEAN_NAME));
 		}
-
-		// Check for JSR-250 support, and if present add an InitDestroyAnnotationBeanPostProcessor
-		// for the javax variant of PostConstruct/PreDestroy.
+		//检查对于 JSR-250 注解支持 如果存在就添加 InitDestroyAnnotationBeanPostProcessor
+		// PostConstruct/PreDestroy的 javax 变体
 		if (jsr250Present && !registry.containsBeanDefinition(JSR250_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			try {
 				RootBeanDefinition def = new RootBeanDefinition(InitDestroyAnnotationBeanPostProcessor.class);
@@ -194,8 +194,7 @@ public abstract class AnnotationConfigUtils {
 				// Failed to load javax variants of the annotation types -> ignore.
 			}
 		}
-
-		// Check for JPA support, and if present add the PersistenceAnnotationBeanPostProcessor.
+		// 检查对于 JPA 注解支持 如果存在就添加 PersistenceAnnotationBeanPostProcessor
 		if (jpaPresent && !registry.containsBeanDefinition(PERSISTENCE_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition();
 			try {
@@ -210,12 +209,14 @@ public abstract class AnnotationConfigUtils {
 			beanDefs.add(registerPostProcessor(registry, def, PERSISTENCE_ANNOTATION_PROCESSOR_BEAN_NAME));
 		}
 
+		//添加 EventListenerMethodProcessor
 		if (!registry.containsBeanDefinition(EVENT_LISTENER_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(EventListenerMethodProcessor.class);
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, EVENT_LISTENER_PROCESSOR_BEAN_NAME));
 		}
 
+		//添加 DefaultEventListenerFactory
 		if (!registry.containsBeanDefinition(EVENT_LISTENER_FACTORY_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(DefaultEventListenerFactory.class);
 			def.setSource(source);

@@ -278,6 +278,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
+	 * 返回此BeanFactory的依赖关系比较器 可能是null
 	 * Return the dependency comparator for this BeanFactory (may be {@code null}).
 	 * @since 4.0
 	 */
@@ -300,6 +301,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
+	 * 返回此BeanFactory的自动
 	 * Return the autowire candidate resolver for this BeanFactory (never {@code null}).
 	 */
 	public AutowireCandidateResolver getAutowireCandidateResolver() {

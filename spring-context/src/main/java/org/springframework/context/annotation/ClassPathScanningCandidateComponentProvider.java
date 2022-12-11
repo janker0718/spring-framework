@@ -193,6 +193,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	}
 
 	/**
+	 * 注册默认过滤器
 	 * Register the default filter for {@link Component @Component}.
 	 * <p>This will implicitly register all annotations that have the
 	 * {@link Component @Component} meta-annotation including the
@@ -204,9 +205,11 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 */
 	@SuppressWarnings("unchecked")
 	protected void registerDefaultFilters() {
+		//添加 @Component 注解类型过滤器
 		this.includeFilters.add(new AnnotationTypeFilter(Component.class));
 		ClassLoader cl = ClassPathScanningCandidateComponentProvider.class.getClassLoader();
 		try {
+			//添加 jakarta.annotation.ManagedBean 注解类型过滤器
 			this.includeFilters.add(new AnnotationTypeFilter(
 					((Class<? extends Annotation>) ClassUtils.forName("jakarta.annotation.ManagedBean", cl)), false));
 			logger.trace("JSR-250 'jakarta.annotation.ManagedBean' found and supported for component scanning");
@@ -215,6 +218,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 			// JSR-250 1.1 API (as included in Jakarta EE) not available - simply skip.
 		}
 		try {
+			//添加 jakarta.inject.Named 注解类型过滤器
 			this.includeFilters.add(new AnnotationTypeFilter(
 					((Class<? extends Annotation>) ClassUtils.forName("jakarta.inject.Named", cl)), false));
 			logger.trace("JSR-330 'jakarta.inject.Named' annotation found and supported for component scanning");

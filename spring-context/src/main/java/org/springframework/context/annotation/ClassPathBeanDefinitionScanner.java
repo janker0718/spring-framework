@@ -161,11 +161,14 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		this.registry = registry;
-
+		//使用默认过滤器
 		if (useDefaultFilters) {
+			//注册默认过滤器
 			registerDefaultFilters();
 		}
+		//设置 Environment
 		setEnvironment(environment);
+		//设置 ResourceLoader
 		setResourceLoader(resourceLoader);
 	}
 
@@ -249,11 +252,12 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * @return number of beans registered
 	 */
 	public int scan(String... basePackages) {
+		//开始时bean定义数量
 		int beanCountAtScanStart = this.registry.getBeanDefinitionCount();
-
+		//扫描基础包
 		doScan(basePackages);
 
-		// Register annotation config processors, if necessary.
+		// 如有必要，注册注解配置处理器。
 		if (this.includeAnnotationConfig) {
 			AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 		}

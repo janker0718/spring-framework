@@ -61,23 +61,28 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 
 
 	/**
-	 * Create a new AnnotationConfigApplicationContext that needs to be populated
-	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
+	 * 创建需要填充的新的 AnnotationConfigApplicationContext 通过调用 {@link #register} 然后手动 {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigApplicationContext() {
+		//创建 AnnotatedBeanDefReader 开始
 		StartupStep createAnnotatedBeanDefReader = this.getApplicationStartup().start("spring.context.annotated-bean-reader.create");
+		//创建 AnnotatedBeanDefinitionReader
 		this.reader = new AnnotatedBeanDefinitionReader(this);
+		//创建 AnnotatedBeanDefReader 结束
 		createAnnotatedBeanDefReader.end();
+		//创建 ClassPathBeanDefinitionScanner
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
 	/**
-	 * Create a new AnnotationConfigApplicationContext with the given DefaultListableBeanFactory.
+	 * 通过给定的 DefaultListableBeanFactory 创建一个新的 AnnotationConfigApplicationContext
 	 * @param beanFactory the DefaultListableBeanFactory instance to use for this context
 	 */
 	public AnnotationConfigApplicationContext(DefaultListableBeanFactory beanFactory) {
 		super(beanFactory);
+		//创建 AnnotatedBeanDefinitionReader
 		this.reader = new AnnotatedBeanDefinitionReader(this);
+		//创建 ClassPathBeanDefinitionScanner
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
@@ -89,7 +94,9 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
 		this();
+		//注册组件类
 		register(componentClasses);
+		//刷新上下文
 		refresh();
 	}
 
@@ -100,8 +107,11 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * @param basePackages the packages to scan for component classes
 	 */
 	public AnnotationConfigApplicationContext(String... basePackages) {
+		//默认构造函数 准备 AnnotatedBeanDefReader 和 ClassPathBeanDefinitionScanner
 		this();
+		//扫描基础包
 		scan(basePackages);
+		//刷新上下文
 		refresh();
 	}
 
@@ -152,37 +162,42 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	//---------------------------------------------------------------------
 
 	/**
-	 * Register one or more component classes to be processed.
-	 * <p>Note that {@link #refresh()} must be called in order for the context
-	 * to fully process the new classes.
-	 * @param componentClasses one or more component classes &mdash; for example,
+	 * 注册一个或多个要处理的组件类
+	 * <p>注意，必须调用｛@link#refresh（）｝，上下文才能完全处理新类。
+	 * @param componentClasses 一个或多个组件类 &mdash; 例如,
 	 * {@link Configuration @Configuration} classes
 	 * @see #scan(String...)
 	 * @see #refresh()
 	 */
 	@Override
 	public void register(Class<?>... componentClasses) {
+		//断言 componentClasses 不为空
 		Assert.notEmpty(componentClasses, "At least one component class must be specified");
+		//注册组件类开始
 		StartupStep registerComponentClass = this.getApplicationStartup().start("spring.context.component-classes.register")
 				.tag("classes", () -> Arrays.toString(componentClasses));
+		//注册组件类
 		this.reader.register(componentClasses);
+		//注册组件类开始
 		registerComponentClass.end();
 	}
 
 	/**
-	 * Perform a scan within the specified base packages.
-	 * <p>Note that {@link #refresh()} must be called in order for the context
-	 * to fully process the new classes.
-	 * @param basePackages the packages to scan for component classes
+	 * 在指定的基本包内执行扫描。
+	 * <p>注意，必须为上下文调用  {@link #refresh()} 以完全处理新类
+	 * @param basePackages 要扫描组件类的包
 	 * @see #register(Class...)
 	 * @see #refresh()
 	 */
 	@Override
 	public void scan(String... basePackages) {
+		//断言 basePackages 不为空
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
+		// 扫描包 scanPackages 开始
 		StartupStep scanPackages = this.getApplicationStartup().start("spring.context.base-packages.scan")
 				.tag("packages", () -> Arrays.toString(basePackages));
 		this.scanner.scan(basePackages);
+		// 扫描包 结束
 		scanPackages.end();
 	}
 
