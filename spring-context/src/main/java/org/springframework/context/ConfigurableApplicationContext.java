@@ -28,10 +28,10 @@ import org.springframework.core.metrics.ApplicationStartup;
 import org.springframework.lang.Nullable;
 
 /**
- * SPI interface to be implemented by most if not all application contexts.
- * Provides facilities to configure an application context in addition
- * to the application context client methods in the
- * {@link org.springframework.context.ApplicationContext} interface.
+ * SPI 接口将由大多数（如果不是全部）应用程序上下文实现。
+ * 另外提供配置应用程序上下文的工具
+ * 到应用程序上下文客户端方法
+ *  {@link org.springframework.context.ApplicationContext} 接口。
  *
  * <p>Configuration and lifecycle methods are encapsulated here to avoid
  * making them obvious to ApplicationContext client code. The present
@@ -71,13 +71,13 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	String LOAD_TIME_WEAVER_BEAN_NAME = "loadTimeWeaver";
 
 	/**
-	 * Name of the {@link Environment} bean in the factory.
+	 * 厂中 {@link Environment} bean 的名称。
 	 * @since 3.1
 	 */
 	String ENVIRONMENT_BEAN_NAME = "environment";
 
 	/**
-	 * Name of the System properties bean in the factory.
+	 * 工厂中系统属性 bean 的名称。
 	 * @see java.lang.System#getProperties()
 	 */
 	String SYSTEM_PROPERTIES_BEAN_NAME = "systemProperties";

@@ -29,18 +29,15 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Standalone application context, accepting <em>component classes</em> as input &mdash;
- * in particular {@link Configuration @Configuration}-annotated classes, but also plain
- * {@link org.springframework.stereotype.Component @Component} types and JSR-330 compliant
- * classes using {@code jakarta.inject} annotations.
+ * 独立应用程序上下文，接受<em>组件类</em>作为输入 -
+ *   特别是 {@link Configuration @Configuration} 带注释的类，但也是简单的
+ *   使用 {@code jakarta.inject} 注解的 {@link org.springframework.stereotype.Component @Component} 类型和 JSR-330 兼容类。
  *
- * <p>Allows for registering classes one by one using {@link #register(Class...)}
- * as well as for classpath scanning using {@link #scan(String...)}.
+ * <p>允许使用 {@link #register(Class...)} 逐一注册类，以及使用 {@link #scan(String...)} 进行类路径扫描。
  *
- * <p>In case of multiple {@code @Configuration} classes, {@link Bean @Bean} methods
- * defined in later classes will override those defined in earlier classes. This can
- * be leveraged to deliberately override certain bean definitions via an extra
- * {@code @Configuration} class.
+ * <p>如果有多个 {@code @Configuration} 类，后面的类中定义的
+ * {@link Bean @Bean} 方法将覆盖前面的类中定义的方法。
+ * 可以利用这一点通过额外的 {@code @Configuration} 类故意覆盖某些 bean 定义。
  *
  * <p>See {@link Configuration @Configuration}'s javadoc for usage examples.
  *
@@ -57,6 +54,9 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 
 	private final AnnotatedBeanDefinitionReader reader;
 
+	/**
+	 * 类路径bean定义扫描器
+	 */
 	private final ClassPathBeanDefinitionScanner scanner;
 
 
@@ -67,28 +67,32 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	public AnnotationConfigApplicationContext() {
 		//获取应用启动类 进行启动
 		StartupStep createAnnotatedBeanDefReader = getApplicationStartup().start("spring.context.annotated-bean-reader.create");
+		//初始化一个注解bean定义读取器
 		this.reader = new AnnotatedBeanDefinitionReader(this);
+		//创建注解式的bean定义读取器结束
 		createAnnotatedBeanDefReader.end();
+		//初始化一个类路径bena定义扫描器
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
 	/**
-	 * Create a new AnnotationConfigApplicationContext with the given DefaultListableBeanFactory.
-	 * @param beanFactory the DefaultListableBeanFactory instance to use for this context
+	 * 使用给定的 DefaultListableBeanFactory 创建一个新的 AnnotationConfigApplicationContext。
+	 * @param beanFactory 用于此上下文的 DefaultListableBeanFactory 实例
 	 */
 	public AnnotationConfigApplicationContext(DefaultListableBeanFactory beanFactory) {
 		super(beanFactory);
+		//初始化一个注解bean定义读取器
 		this.reader = new AnnotatedBeanDefinitionReader(this);
+		//初始化一个类路径bena定义扫描器
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
 	/**
-	 * Create a new AnnotationConfigApplicationContext, deriving bean definitions
-	 * from the given component classes and automatically refreshing the context.
-	 * @param componentClasses one or more component classes &mdash; for example,
-	 * {@link Configuration @Configuration} classes
+	 * 创建一个新的 AnnotationConfigApplicationContext，从给定的组件类派生 bean 定义并自动刷新上下文。
+	 * @param componentClasses 一个或多个组件类—— 例如，{@link Configuration @Configuration} 类
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
+		//执行默认无参构造函数
 		this();
 		//注册组件类
 		register(componentClasses);
@@ -123,11 +127,9 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	}
 
 	/**
-	 * Provide a custom {@link BeanNameGenerator} for use with {@link AnnotatedBeanDefinitionReader}
-	 * and/or {@link ClassPathBeanDefinitionScanner}, if any.
-	 * <p>Default is {@link AnnotationBeanNameGenerator}.
-	 * <p>Any call to this method must occur prior to calls to {@link #register(Class...)}
-	 * and/or {@link #scan(String...)}.
+	 * 提供自定义的 {@link BeanNameGenerator} 以与 {@link AnnotatedBeanDefinitionReader} 和/或 {@link ClassPathBeanDefinitionScanner}（如果有）一起使用。
+	 * <p>默认为{@link AnnotationBeanNameGenerator}。
+	 * <p>对此方法的任何调用都必须在调用 {@link #register(Class...)} 和/或 {@link #scan(String...)} 之前进行。
 	 * @see AnnotatedBeanDefinitionReader#setBeanNameGenerator
 	 * @see ClassPathBeanDefinitionScanner#setBeanNameGenerator
 	 * @see AnnotationBeanNameGenerator
@@ -153,47 +155,52 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 
 
 	//---------------------------------------------------------------------
-	// Implementation of AnnotationConfigRegistry
+	// AnnotationConfigRegistry的实现
 	//---------------------------------------------------------------------
 
 	/**
-	 * Register one or more component classes to be processed.
-	 * <p>Note that {@link #refresh()} must be called in order for the context
-	 * to fully process the new classes.
-	 * @param componentClasses one or more component classes &mdash; for example,
-	 * {@link Configuration @Configuration} classes
+	 * 注册一个或多个要处理的组件类。
+	 * <p>请注意，必须调用 {@link #refresh()} 才能使上下文完全处理新类。
+	 * @param componentClasses 一个或多个组件类—— 例如，{@link Configuration @Configuration} 类
 	 * @see #scan(String...)
 	 * @see #refresh()
 	 */
 	@Override
 	public void register(Class<?>... componentClasses) {
+		//断言组件类不能为空
 		Assert.notEmpty(componentClasses, "At least one component class must be specified");
+		//启动步骤 - 注册组件类
 		StartupStep registerComponentClass = getApplicationStartup().start("spring.context.component-classes.register")
 				.tag("classes", () -> Arrays.toString(componentClasses));
+		//读取器注册组件类
 		this.reader.register(componentClasses);
+		//注册组件类步骤结束
 		registerComponentClass.end();
 	}
 
 	/**
-	 * Perform a scan within the specified base packages.
-	 * <p>Note that {@link #refresh()} must be called in order for the context
-	 * to fully process the new classes.
-	 * @param basePackages the packages to scan for component classes
+	 * 在指定的基础包中执行扫描。
+	 * <p>请注意，必须调用 {@link #refresh()} 才能使上下文完全处理新类。
+	 * @param basePackages 用于扫描组件类的包
 	 * @see #register(Class...)
 	 * @see #refresh()
 	 */
 	@Override
 	public void scan(String... basePackages) {
+		//断言 基础包不能为空
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
+		//启动步骤标识
 		StartupStep scanPackages = getApplicationStartup().start("spring.context.base-packages.scan")
 				.tag("packages", () -> Arrays.toString(basePackages));
+		//扫描器 扫描基础包
 		this.scanner.scan(basePackages);
+		//包扫描结束后动作、可重写 加入自己需要执行的逻辑
 		scanPackages.end();
 	}
 
 
 	//---------------------------------------------------------------------
-	// Adapt superclass registerBean calls to AnnotatedBeanDefinitionReader
+	// 将超类 registerBean 调用调整为 AnnotatedBeanDefinitionReader
 	//---------------------------------------------------------------------
 
 	@Override
