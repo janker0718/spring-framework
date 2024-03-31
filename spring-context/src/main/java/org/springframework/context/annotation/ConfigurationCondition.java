@@ -41,19 +41,17 @@ public interface ConfigurationCondition extends Condition {
 	enum ConfigurationPhase {
 
 		/**
-		 * The {@link Condition} should be evaluated as a {@code @Configuration}
-		 * class is being parsed.
-		 * <p>If the condition does not match at this point, the {@code @Configuration}
-		 * class will not be added.
+		 * {@link Condition} 应在解析 {@code @Configuration} 类时进行评估。
+		 * <p>如果此时条件不匹配，则 {@code @Configuration}
+		 * 类将不会被添加。
 		 */
 		PARSE_CONFIGURATION,
 
 		/**
-		 * The {@link Condition} should be evaluated when adding a regular
-		 * (non {@code @Configuration}) bean. The condition will not prevent
-		 * {@code @Configuration} classes from being added.
-		 * <p>At the time that the condition is evaluated, all {@code @Configuration}
-		 * classes will have been parsed.
+		 * 添加常规条件时应评估 {@link Condition}
+		 *   （非 {@code @Configuration}）bean。 该情况不会阻止
+		 *   添加 {@code @Configuration} 类。
+		 * <p>在评估条件时，所有 {@code @Configuration} 类将被解析。
 		 */
 		REGISTER_BEAN
 	}

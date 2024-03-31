@@ -26,10 +26,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.lang.Nullable;
 
 /**
- * {@link org.springframework.context.ApplicationContext} implementation
- * which supports programmatic registration of beans and messages,
- * rather than reading bean definitions from external configuration sources.
- * Mainly useful for testing.
+ * {@link org.springframework.context.ApplicationContext} 实现
+ *  支持 bean 和消息的编程注册，
+ *  而不是从外部配置源读取 bean 定义。
+ * 主要用于测试。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller

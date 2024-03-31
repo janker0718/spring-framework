@@ -37,17 +37,17 @@ import org.springframework.web.context.ConfigurableWebEnvironment;
 import org.springframework.web.context.ServletContextAware;
 
 /**
- * Subclass of {@link GenericApplicationContext}, suitable for web environments.
+ * {@link GenericApplicationContext} 的子类，适用于 Web 环境。
  *
- * <p>Implements {@link ConfigurableWebApplicationContext}, but is not intended for
- * declarative setup in {@code web.xml}. Instead, it is designed for programmatic setup,
- * for example for building nested contexts or for use within
- * {@link org.springframework.web.WebApplicationInitializer WebApplicationInitializers}.
+ * <p>实现 {@link ConfigurableWebApplicationContext}，
+ * 但不适用于 {@code web.xml} 中的声明性设置。
+ * 相反，它是为编程设置而设计的，
+ * 例如用于构建嵌套上下文或在{@link org.springframework.web.WebApplicationInitializer WebApplicationInitializers}中使用。
  *
- * <p>Interprets resource paths as servlet context resources, i.e. as paths beneath
- * the web application root. Absolute paths &mdash; for example, for files outside
- * the web app root &mdash; can be accessed via {@code file:} URLs, as implemented
- * by {@code AbstractApplicationContext}.
+ * <p>将资源路径解释为 servlet 上下文资源，即 作为下面的路径
+ * Web 应用程序根目录。 绝对路径—— 例如，对于外部文件
+ * Web 应用程序根目录 – 可以通过 {@code file:} URL 访问，如实施的那样
+ * 通过{@code AbstractApplicationContext}。
  *
  * <p>In addition to the special beans detected by
  * {@link org.springframework.context.support.AbstractApplicationContext AbstractApplicationContext},
@@ -82,15 +82,19 @@ import org.springframework.web.context.ServletContextAware;
 public class GenericWebApplicationContext extends GenericApplicationContext
 		implements ConfigurableWebApplicationContext, ThemeSource {
 
+	/**
+	 * servlet 上下文
+	 */
 	@Nullable
 	private ServletContext servletContext;
+
 
 	@Nullable
 	private ThemeSource themeSource;
 
 
 	/**
-	 * Create a new {@code GenericWebApplicationContext}.
+	 * 创建一个新的 {@code GenericWebApplicationContext}。
 	 * @see #setServletContext
 	 * @see #registerBeanDefinition
 	 * @see #refresh
@@ -100,7 +104,7 @@ public class GenericWebApplicationContext extends GenericApplicationContext
 	}
 
 	/**
-	 * Create a new {@code GenericWebApplicationContext} for the given {@link ServletContext}.
+	 * 为给定的 {@link ServletContext} 创建一个新的 {@code GenericWebApplicationContext}。
 	 * @param servletContext the {@code ServletContext} to run in
 	 * @see #registerBeanDefinition
 	 * @see #refresh
@@ -110,7 +114,7 @@ public class GenericWebApplicationContext extends GenericApplicationContext
 	}
 
 	/**
-	 * Create a new {@code GenericWebApplicationContext} with the given {@link DefaultListableBeanFactory}.
+	 * 使用给定的 {@link DefaultListableBeanFactory} 创建一个新的 {@code GenericWebApplicationContext}。
 	 * @param beanFactory the {@code DefaultListableBeanFactory} instance to use for this context
 	 * @see #setServletContext
 	 * @see #registerBeanDefinition
@@ -121,10 +125,10 @@ public class GenericWebApplicationContext extends GenericApplicationContext
 	}
 
 	/**
-	 * Create a new {@code GenericWebApplicationContext} with the given {@link DefaultListableBeanFactory}
-	 * and {@link ServletContext}.
-	 * @param beanFactory the {@code DefaultListableBeanFactory} instance to use for this context
-	 * @param servletContext the {@code ServletContext} to run in
+	 * 使用给定的 {@link DefaultListableBeanFactory} 创建一个新的 {@code GenericWebApplicationContext}
+	 *   和{@link ServletContext}。
+	 * @param beanFactory 用于此上下文的 {@code DefaultListableBeanFactory} 实例
+	 * @param servletContext 要运行的 {@code ServletContext}
 	 * @see #registerBeanDefinition
 	 * @see #refresh
 	 */
@@ -135,7 +139,7 @@ public class GenericWebApplicationContext extends GenericApplicationContext
 
 
 	/**
-	 * Set the {@link ServletContext} that this {@code WebApplicationContext} runs in.
+	 * 设置此 {@code WebApplicationContext} 在其中运行的 {@link ServletContext}。
 	 */
 	@Override
 	public void setServletContext(@Nullable ServletContext servletContext) {

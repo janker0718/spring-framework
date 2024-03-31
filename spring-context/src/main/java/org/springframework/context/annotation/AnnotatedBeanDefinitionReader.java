@@ -134,6 +134,7 @@ public class AnnotatedBeanDefinitionReader {
 	 */
 	public void register(Class<?>... componentClasses) {
 		for (Class<?> componentClass : componentClasses) {
+			//注册bean
 			registerBean(componentClass);
 		}
 	}
@@ -148,11 +149,10 @@ public class AnnotatedBeanDefinitionReader {
 	}
 
 	/**
-	 * Register a bean from the given bean class, deriving its metadata from
-	 * class-declared annotations.
-	 * @param beanClass the class of the bean
-	 * @param name an explicit name for the bean
-	 * (or {@code null} for generating a default bean name)
+	 * 从给定的 bean 类注册一个 bean，从类声明的注解中派生其元数据。
+	 * @param beanClass bean 类
+	 * @param name bean 的显式名称
+	 * （或 {@code null} 用于生成默认 bean 名称）
 	 * @since 5.2
 	 */
 	public void registerBean(Class<?> beanClass, @Nullable String name) {
@@ -160,8 +160,7 @@ public class AnnotatedBeanDefinitionReader {
 	}
 
 	/**
-	 * Register a bean from the given bean class, deriving its metadata from
-	 * class-declared annotations.
+	 * 从给定的 bean 类注册一个 bean，从类声明的注解中派生其元数据。
 	 * @param beanClass the class of the bean
 	 * @param qualifiers specific qualifier annotations to consider,
 	 * in addition to qualifiers at the bean class level
@@ -258,7 +257,7 @@ public class AnnotatedBeanDefinitionReader {
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
 		abd.setScope(scopeMetadata.getScopeName());
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
-
+		//处理通用定义注解
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
 		if (qualifiers != null) {
 			for (Class<? extends Annotation> qualifier : qualifiers) {
