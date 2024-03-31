@@ -142,8 +142,9 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 				AnnotationConfigUtils.CONFIGURATION_BEAN_NAME_GENERATOR, beanNameGenerator);
 	}
 
+
 	/**
-	 * Set the {@link ScopeMetadataResolver} to use for registered component classes.
+	 * 将{@link ScopeMetadataResolver} 设置用于注册组件类。
 	 * <p>The default is an {@link AnnotationScopeMetadataResolver}.
 	 * <p>Any call to this method must occur prior to calls to {@link #register(Class...)}
 	 * and/or {@link #scan(String...)}.
